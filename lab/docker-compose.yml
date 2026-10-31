@@ -1,0 +1,34 @@
+# Local test lab for the honeypot dissertation.
+# Based on Cowrie's own docker/docker-compose.yml, using the official image.
+#
+# SAFETY: ports are bound to 127.0.0.1, so only your own laptop can reach
+# the honeypot. Do NOT change this to 0.0.0.0 on your home network.
+
+volumes:
+  cowrie-etc:
+  cowrie-var:
+
+services:
+  cowrie:
+    image: cowrie/cowrie:latest
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:2222:2222"   # SSH honeypot
+      - "127.0.0.1:2223:2223"   # Telnet honeypot
+    environment:
+      # Cowrie reads COWRIE_<SECTION>_<OPTION> environment variables.
+      COWRIE_TELNET_ENABLED: "yes"
+      # Label stored in every log line. Use uk-south / east-us / southeast-asia
+      # on the real servers so the analysis can tell the regions apart.
+      COWRIE_HONEYPOT_SENSOR_NAME: "lab-local"
+      # The default hostname "svr04" is a well-known Cowrie giveaway.
+      COWRIE_HONEYPOT_HOSTNAME: "web-prod-02"
+      COWRIE_HONEYPOT_TIMEZONE: "UTC"
+    volumes:
+      - cowrie-etc:/cowrie/cowrie-git/etc
+      - cowrie-var:/cowrie/cowrie-git/var
+    cap_drop:
+      - ALL
+    read_only: true
+    security_opt:
+      - no-new-privileges:true

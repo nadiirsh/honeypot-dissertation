@@ -1,0 +1,3 @@
+# Only the attacker simulator needs a third-party package.
+# The analysis and blocklist scripts use the Python standard library.
+paramiko>=3.4

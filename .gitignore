@@ -1,0 +1,14 @@
+# Attacker IP addresses are personal data under UK GDPR.
+# Never push logs, blocklist matches or outputs to GitHub. Code only.
+data/logs/*
+data/blocklists/*
+output/*
+!data/logs/.gitkeep
+!data/blocklists/.gitkeep
+!output/.gitkeep
+golive.json
+__pycache__/
+*.pyc
+.venv/
+
+.idea/
