@@ -14,7 +14,10 @@ effectiveness of public IP blocklists.*
 | `analysis/attack_rules.py` | Maps attacker commands to MITRE ATT&CK techniques (the rule set you validate in Objective 5) | RQ1 |
 | `scripts/fetch_blocklists.py` | Saves a daily snapshot of 7 public blocklists | RQ2 |
 | `analysis/check_blocklists.py` | Were attackers listed *before* they attacked? How many sessions would blocking have stopped? | RQ2 |
-| `docs/01-local-lab-guide.md` | Step-by-step for November | |
+| `docs/01-local-lab-guide.md` | Step-by-step for the local lab | |
+| `deploy/setup_honeypot.sh` | Turns a fresh Ubuntu 24.04 Azure VM into a sensor: admin SSH on 50022, Cowrie with host networking (real attacker IPs), ports 22/23 redirected, Cowrie blocked from making outbound connections, daily hash-and-delete of saved files, optional daily blocklist snapshot | deploy |
+| `deploy/pull_logs.ps1` | Copies logs and blocklists from the VMs to your OneDrive (Windows) | deploy |
+| `docs/02-azure-deployment.md` | Rehearsal now (your IP only), go-live after ethics approval | |
 
 The analysis and blocklist scripts only use the Python standard library. The simulator needs `paramiko`.
 
@@ -28,9 +31,8 @@ The analysis and blocklist scripts only use the Python standard library. The sim
 - `check_blocklists.py` was checked against hand-built cases: listed IP, IP inside a listed range,
   IP listed only after the attack, never-listed IP, attack before any snapshot, IPv6.
 - `fetch_blocklists.py` was run against the live lists on 30 October 2026.
-- **Not tested:** `docker compose` with the official image (Docker Hub was not reachable from the build
-  environment). The Compose file follows Cowrie's own and uses the official `cowrie/cowrie` image
-  (built for both Intel/AMD and Apple Silicon). Tell me if step 2 of the lab guide fails.
+- `deploy/setup_honeypot.sh`: the firewall rules were tested against a running Cowrie (applied twice with no duplicates; Cowrie's user blocked from outbound connections while root can still fetch blocklists; inbound logins still work; an attacker `wget` is logged but fetches nothing). The daily hash-and-delete job was tested. The full script has not been run on an Azure VM yet: the rehearsal in `docs/02-azure-deployment.md` is that test.
+- The lab `docker compose` setup was run successfully on Windows (Docker Desktop) on 31 October 2026.
 
 ## Two findings that matter for the dissertation
 
